@@ -1,0 +1,22 @@
+@import "_mixins.scss";
+
+
+.ui-botnCenter {
+	@include center-translate();
+}
+.ui-horizontal {
+	@include center-translate(horizontal);
+}
+.ui-vertical {
+	@include center-translate(vertical);
+}
+.ui-middleWrap {
+	position: relative;
+	margin-top: -20px;
+	@include marginAuto();
+	width: 1000px;
+	height: 1000px;
+	background-color: #fff;
+
+	box-shadow: 0 0 25px rgba(0, 0, 0, .2);
+}

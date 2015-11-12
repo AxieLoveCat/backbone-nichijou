@@ -1,0 +1,45 @@
+
+@import "_mixins.scss";
+
+.header {
+	position: relative;
+	height: 60vh;
+	min-height: 300px;
+	background: gray 50% 50% no-repeat;
+	background-size: cover;
+	background-attachment: fixed;
+	font-family: "webfont";
+}
+.site {
+	
+	$content-font-size: 36px;
+	$meta-font-size: 22px;
+
+	&-meta {
+		text-align: center;
+		color: #fff;
+		font-weight: 400;
+		transition: all 1.2s;
+	}
+	&-meta.animated {
+		transform: scale(1.5, 1.5);
+		opacity: 0;
+	}
+
+	&--name {
+		margin: 0;
+		font-size: $content-font-size;
+		// font-weight: 400;
+		text-shadow: 1px 1px 5px gray;
+	}
+	&--description {
+		margin: 10px 10px 10px 0;
+		font-size: $meta-font-size;
+	}
+
+	
+}
+
+.option-menu {
+	
+}

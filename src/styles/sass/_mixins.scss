@@ -1,0 +1,140 @@
+$elementSeparator: '__';
+$modifierSeparator: '--';
+
+@function containsModifier($selector) {
+    $selector: selectorToString($selector);
+    @if str-index($selector, $modifierSeparator) {
+        @return true;
+    } @else {
+        @return false;
+    }
+}
+
+@function selectorToString($selector) {
+    $selector: inspect($selector); //cast to string
+    $selector: str-slice($selector, 2, -2); //remove brackets
+    @return $selector;
+}
+
+@function getBlock($selector) {
+    $selector: selectorToString($selector);
+    $modifierStart: str-index($selector, $modifierSeparator) - 1;
+    @return str-slice($selector, 0, $modifierStart);
+}
+
+@mixin b($block) {
+    .#{$block} {
+        @content;
+    }
+}
+
+@mixin e($element) {
+    $selector: &;
+    @if containsModifier($selector) {
+        $block: getBlock($selector);
+        @at-root {
+            #{$selector} {
+                #{$block+$elementSeparator+$element} {
+                    @content;
+                }
+            }
+        }
+    } @else {
+        @at-root {
+            #{$selector+$elementSeparator+$element} {
+                @content;
+            }
+        }
+    }
+}
+
+@mixin m($modifier) {
+    @at-root {
+        #{&}#{$modifierSeparator+$modifier} {
+            @content;
+        }
+    }
+}
+
+@mixin position($position,$args){
+    @each $o in top right bottom left {
+        $i: index($args, $o);
+        @if $i and $i + 1 <= length($args) and type-of(nth($args, $i + 1)) == number {
+            #{$o}: nth($args, $i + 1);
+        }
+    }
+    position: $position;
+}
+
+@mixin px2rem($property,$px-values,$baseline-px:16px,$support-for-ie:false){
+    //Conver the baseline into rems
+    $baseline-rem: $baseline-px / 1rem * 1;
+    //Print the first line in pixel values
+    @if $support-for-ie {
+        #{$property}: $px-values;
+    }
+    //if there is only one (numeric) value, return the property/value line for it.
+    @if type-of($px-values) == "number"{
+        #{$property}: $px-values / $baseline-rem;
+    }
+    @else {
+        //Create an empty list that we can dump values into
+        $rem-values:();
+        @each $value in $px-values{
+            // If the value is zero or not a number, return it
+            @if $value == 0 or type-of($value) != "number"{
+                $rem-values: append($rem-values, $value / $baseline-rem);
+            }
+        }
+        // Return the property and its list of converted values
+        #{$property}: $rem-values;
+    }
+}
+
+@mixin corm($middle, $center){
+    position: absolute;
+
+    @if $middle {
+        left: 50%;
+        transform: translateX(-50%)
+    }
+    @if $center {
+        top: 50%;
+        transform: translateY(-50%)
+    }
+}
+
+@mixin boxClamp($v:1){
+    overflow:hidden;
+    -webkit-line-clamp: $v;
+    line-clamp: $v;
+    -webkit-box-orient: vertical;
+    box-orient: vertical;
+    display:-webkit-box;
+    display:box;
+}
+
+@mixin center-translate($direction: both) {
+    position: absolute;
+    @if $direction == both {
+        top: 50%;
+        left: 50%;
+        -webkit-transform: translate3d(-50%, -50%, 0);
+        transform: translate3d(-50%, -50%, 0);
+    }
+    @else if $direction == horizontal {
+        left: 50%;
+        -webkit-transform: translate3d(-50%, 0, 0);
+        transform: translate3d(-50%, 0, 0);
+    }
+    @else if $direction == vertical {
+        top: 50%;
+        -webkit-transform: translate3d(0, -50%, 0);
+        transform: translate3d(0, -50%, 0);
+    }
+}
+
+@mixin marginAuto() {
+    margin-left: auto;
+    margin-right: auto;
+}
